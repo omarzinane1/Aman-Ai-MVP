@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: aman-postgres
+    environment:
+      POSTGRES_USER: aman
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: aman_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - aman-network
+  backend:
+    build: .
+    container_name: aman-backend
+    environment:
+      DB_HOST: postgres
+      DB_USER: aman
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: aman_db
+    depends_on:
+      - postgres
+    networks:
+      - aman-network
+    ports:
+      - "3000:3000"
+volumes:
+  postgres_data:
+networks:
+  aman-network:
