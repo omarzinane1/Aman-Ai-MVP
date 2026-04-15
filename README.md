@@ -1,4 +1,4 @@
-Hi # AMAN-AI MVP
+# AMAN-AI MVP
 
 Protection discrète et intelligente des personnes en situation de risque.
 
