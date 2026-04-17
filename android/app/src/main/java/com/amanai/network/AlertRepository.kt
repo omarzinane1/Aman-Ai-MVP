@@ -3,9 +3,14 @@ package com.amanai.network
 import com.google.gson.annotations.SerializedName
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
+
+interface AlertApi {
+    @POST("api/v1/alerts")
+    suspend fun sendAlert(@Body alert: AlertRequest): Response<AlertResponse>
+}
 
 data class AlertRequest(
     @SerializedName("userId") val userId: String,
@@ -16,30 +21,42 @@ data class AlertRequest(
 )
 
 data class Location(val lat: Double, val lon: Double)
-data class Contact(val type: String, val pushToken: String? = null, val phone: String? = null)
-
-interface AmanApi {
-    @POST("/api/v1/alerts")
-    suspend fun sendAlert(@Body request: AlertRequest): Response<Unit>
-}
+data class AlertResponse(val message: String)
 
 class AlertRepository {
-    private val api: AmanApi
+    private val api: AlertApi
 
     init {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:3000") // Default local backend URL for emulator
+            .baseUrl("http://10.0.2.2:3000/") // Localhost for Android Emulator
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-        api = retrofit.create(AmanApi::class.java)
+        api = retrofit.create(AlertApi::class.java)
     }
 
-    suspend fun sendAlert(request: AlertRequest): Boolean {
+    suspend fun sendAlert(
+        userId: String,
+        riskLevel: Int,
+        location: android.location.Location,
+        scores: Map<String, Float>,
+        contacts: List<Contact>
+    ): Result<Boolean> {
         return try {
+            val request = AlertRequest(
+                userId = userId,
+                riskLevel = riskLevel,
+                location = Location(location.latitude, location.longitude),
+                scores = scores,
+                contacts = contacts
+            )
             val response = api.sendAlert(request)
-            response.isSuccessful
+            if (response.isSuccessful) {
+                Result.success(true)
+            } else {
+                Result.failure(Exception("HTTP ${response.code()}: ${response.message()}"))
+            }
         } catch (e: Exception) {
-            false
+            Result.failure(e)
         }
     }
 }

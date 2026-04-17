@@ -7,24 +7,18 @@ import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 
 class AudioClassifier(context: Context) {
-    private var interpreter: Interpreter? = null
-
+    private val interpreter: Interpreter
     init {
-        try {
-            val model = loadModelFile(context, "audio_model.tflite")
-            interpreter = Interpreter(model)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        val model = loadModelFile(context, "audio_model.tflite")
+        interpreter = Interpreter(model)
     }
-
+    
     fun classify(audioBuffer: ShortArray): Float {
-        // Example implementation
-        // Convert audioBuffer to Mel-spectrogram input
-        // Run inference
-        return 0.85f 
+        // Convertir en Mel-spectrogramme et inférer
+        // Retourne la probabilité de la classe "cri/lutte"
+        return 0.85f // exemple
     }
-
+    
     private fun loadModelFile(context: Context, filename: String): MappedByteBuffer {
         val assetFileDescriptor = context.assets.openFd(filename)
         val inputStream = FileInputStream(assetFileDescriptor.fileDescriptor)
