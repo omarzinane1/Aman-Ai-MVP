@@ -30,15 +30,20 @@ Both the App and the Backend need Firebase to communicate.
 *   **For the App**: Download `google-services.json` from Firebase Console and place it in `android/app/`.
 *   **For the Backend**: Generate a Service Account Key (JSON) from Firebase Console (Settings -> Service Accounts) and place it in `backend/fcm_key.json`.
 
-### 2. Backend Setup (Docker)
-The backend runs inside a containerized environment for consistency.
+### 2. Backend & Training Setup (Docker)
+The system uses Docker to manage the backend API and the AI training environment.
 1.  Navigate to the `backend/` folder.
 2.  Ensure `.env` contains your database credentials.
 3.  Run the containers:
     ```bash
     docker-compose up --build
     ```
-    *This starts the API (Node.js), the Database (PostgreSQL), and the Proxy (Nginx).*
+    *This starts the API (Node.js), the Database (PostgreSQL), and the **Training Environment (Jupyter)**.*
+
+#### Accessing the Training Environment
+Once Docker is running, you can access the AI training notebooks at:
+*   URL: `http://localhost:8888`
+*   Any changes you make to the notebooks or data in the `training/` folder will be saved automatically thanks to the Docker Volumes.
 
 ### 3. Android App Setup
 1.  Open the project in Android Studio.
