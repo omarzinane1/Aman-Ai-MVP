@@ -5,12 +5,15 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.amanai.features.fake_weather.WeatherForecastScreen
+import com.amanai.features.fake_weather.WeatherHomeScreen
+import com.amanai.features.secret_access.SecretAccessPinScreen
 import com.amanai.features.splash.SplashScreen
 
 @Composable
 fun AppNavGraph(
     modifier: Modifier = Modifier,
-    startDestination: String = Routes.SPLASH
+    startDestination: String = Routes.SECRET_ACCESS_PIN
 ) {
     val navController = rememberNavController()
 
@@ -21,6 +24,15 @@ fun AppNavGraph(
     ) {
         composable(Routes.SPLASH) {
             SplashScreen()
+        }
+        composable(Routes.WEATHER_HOME) {
+            WeatherHomeScreen()
+        }
+        composable(Routes.WEATHER_FORECAST) {
+            WeatherForecastScreen()
+        }
+        composable(Routes.SECRET_ACCESS_PIN) {
+            SecretAccessPinScreen()
         }
     }
 }
