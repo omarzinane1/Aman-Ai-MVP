@@ -13,14 +13,50 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.amanai.service.DetectionService
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.amanai.ui.theme.AmanAiTheme
+
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.amanai.ui.SplashScreen
+
+import com.amanai.ui.AlertScreen
+import com.amanai.ui.OnboardingScreen
+import com.amanai.ui.SafetyStatusScreen
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startService(DetectionService.newIntent(this))
+        // startService(DetectionService.newIntent(this)) 
         setContent {
-            MaterialTheme {
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    HomeScreen()
+            AmanAiTheme {
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "splash") {
+                    composable("splash") {
+                        SplashScreen(onTimeout = {
+                            navController.navigate("onboarding") {
+                                popUpTo("splash") { inclusive = true }
+                            }
+                        })
+                    }
+                    composable("onboarding") {
+                        OnboardingScreen(onFinished = {
+                            navController.navigate("main") {
+                                popUpTo("onboarding") { inclusive = true }
+                            }
+                        })
+                    }
+                    composable("main") {
+                        SafetyStatusScreen(onTriggerAlert = {
+                            navController.navigate("alert")
+                        })
+                    }
+                    composable("alert") {
+                        AlertScreen(onCancel = {
+                            navController.popBackStack()
+                        })
+                    }
                 }
             }
         }
@@ -29,7 +65,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun HomeScreen() {
-    var isActive by remember { mutableStateOf(true) }
     var statusText by remember { mutableStateOf("Protection active") }
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -46,5 +81,13 @@ fun HomeScreen() {
         OutlinedButton(onClick = { /* Ouvrir paramètres */ }) {
             Text("Contacts & réglages")
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    AmanAiTheme {
+        HomeScreen()
     }
 }
