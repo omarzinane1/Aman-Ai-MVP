@@ -3,7 +3,7 @@ package com.amanai.network
 import com.google.gson.annotations.SerializedName
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
 
@@ -15,8 +15,16 @@ data class AlertRequest(
     @SerializedName("contacts") val contacts: List<Contact>
 )
 
-data class Location(val lat: Double, val lon: Double)
-data class Contact(val type: String, val pushToken: String? = null, val phone: String? = null)
+data class Location(
+    val lat: Double,
+    val lon: Double
+)
+
+data class Contact(
+    val type: String,
+    val pushToken: String? = null,
+    val phone: String? = null
+)
 
 interface AmanApi {
     @POST("/api/v1/alerts")
@@ -28,9 +36,10 @@ class AlertRepository {
 
     init {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:3000") // Default local backend URL for emulator
+            .baseUrl("http://10.0.2.2:3000/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+
         api = retrofit.create(AmanApi::class.java)
     }
 

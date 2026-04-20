@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "android"
+rootProject.name = "AMAN-AI"
 include(":app")
