@@ -2,6 +2,7 @@ package com.amanai.features.fake_weather
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,7 +42,13 @@ import androidx.compose.ui.unit.sp
 import com.amanai.app.theme.AmanAiTheme
 
 @Composable
-fun WeatherHomeScreen(modifier: Modifier = Modifier) {
+fun WeatherHomeScreen(
+    modifier: Modifier = Modifier,
+    onWeatherClick: () -> Unit = {},
+    onForecastClick: () -> Unit = {},
+    onSafetyClick: () -> Unit = {},
+    onSettingsClick: () -> Unit = {}
+) {
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -69,7 +76,11 @@ fun WeatherHomeScreen(modifier: Modifier = Modifier) {
         }
 
         WeatherHomeBottomBar(
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter),
+            onWeatherClick = onWeatherClick,
+            onForecastClick = onForecastClick,
+            onSafetyClick = onSafetyClick,
+            onSettingsClick = onSettingsClick
         )
     }
 }
@@ -469,7 +480,13 @@ private fun AirQualityCard(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun WeatherHomeBottomBar(modifier: Modifier = Modifier) {
+private fun WeatherHomeBottomBar(
+    modifier: Modifier = Modifier,
+    onWeatherClick: () -> Unit = {},
+    onForecastClick: () -> Unit = {},
+    onSafetyClick: () -> Unit = {},
+    onSettingsClick: () -> Unit = {}
+) {
     Surface(
         modifier = modifier
             .fillMaxWidth()
@@ -485,10 +502,10 @@ private fun WeatherHomeBottomBar(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Top
         ) {
-            HomeBottomItem(HomeIconType.Cloud, "Weather", selected = true)
-            HomeBottomItem(HomeIconType.Forecast, "Forecast", selected = false)
-            HomeBottomItem(HomeIconType.Shield, "Safety", selected = false)
-            HomeBottomItem(HomeIconType.Settings, "Settings", selected = false)
+            HomeBottomItem(HomeIconType.Cloud, "Weather", selected = true, onClick = onWeatherClick)
+            HomeBottomItem(HomeIconType.Forecast, "Forecast", selected = false, onClick = onForecastClick)
+            HomeBottomItem(HomeIconType.Shield, "Safety", selected = false, onClick = onSafetyClick)
+            HomeBottomItem(HomeIconType.Settings, "Settings", selected = false, onClick = onSettingsClick)
         }
     }
 }
@@ -498,11 +515,14 @@ private fun HomeBottomItem(
     icon: HomeIconType,
     label: String,
     selected: Boolean,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val contentColor = if (selected) HomeNavy else HomeSoftText
     Column(
-        modifier = modifier.width(49.dp),
+        modifier = modifier
+            .width(49.dp)
+            .clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (selected) {

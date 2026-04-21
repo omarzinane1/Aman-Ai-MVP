@@ -2,6 +2,7 @@ package com.amanai.features.fake_weather
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,7 +42,13 @@ import androidx.compose.ui.unit.sp
 import com.amanai.app.theme.AmanAiTheme
 
 @Composable
-fun WeatherForecastScreen(modifier: Modifier = Modifier) {
+fun WeatherForecastScreen(
+    modifier: Modifier = Modifier,
+    onWeatherClick: () -> Unit = {},
+    onForecastClick: () -> Unit = {},
+    onSafetyClick: () -> Unit = {},
+    onSettingsClick: () -> Unit = {}
+) {
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -67,7 +74,11 @@ fun WeatherForecastScreen(modifier: Modifier = Modifier) {
         }
 
         ForecastBottomBar(
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter),
+            onWeatherClick = onWeatherClick,
+            onForecastClick = onForecastClick,
+            onSafetyClick = onSafetyClick,
+            onSettingsClick = onSettingsClick
         )
     }
 }
@@ -420,7 +431,13 @@ private fun WeatherMetricCard(
 }
 
 @Composable
-private fun ForecastBottomBar(modifier: Modifier = Modifier) {
+private fun ForecastBottomBar(
+    modifier: Modifier = Modifier,
+    onWeatherClick: () -> Unit = {},
+    onForecastClick: () -> Unit = {},
+    onSafetyClick: () -> Unit = {},
+    onSettingsClick: () -> Unit = {}
+) {
     Surface(
         modifier = modifier
             .fillMaxWidth()
@@ -436,10 +453,10 @@ private fun ForecastBottomBar(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Top
         ) {
-            BottomNavItem(WeatherIconType.Cloud, "Weather", false)
-            BottomNavItem(WeatherIconType.Forecast, "Forecast", true)
-            BottomNavItem(WeatherIconType.Shield, "Safety", false)
-            BottomNavItem(WeatherIconType.Settings, "Settings", false)
+            BottomNavItem(WeatherIconType.Cloud, "Weather", false, onClick = onWeatherClick)
+            BottomNavItem(WeatherIconType.Forecast, "Forecast", true, onClick = onForecastClick)
+            BottomNavItem(WeatherIconType.Shield, "Safety", false, onClick = onSafetyClick)
+            BottomNavItem(WeatherIconType.Settings, "Settings", false, onClick = onSettingsClick)
         }
     }
 }
@@ -449,11 +466,14 @@ private fun BottomNavItem(
     icon: WeatherIconType,
     label: String,
     selected: Boolean,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val color = if (selected) ForecastNavy else ForecastSoftText
     Column(
-        modifier = modifier.width(47.dp),
+        modifier = modifier
+            .width(47.dp)
+            .clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         WeatherIcon(type = icon, modifier = Modifier.size(15.dp), tint = color)

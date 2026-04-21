@@ -2,6 +2,7 @@ package com.amanai.features.secret_access
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -40,7 +46,18 @@ import androidx.compose.ui.unit.sp
 import com.amanai.app.theme.AmanAiTheme
 
 @Composable
-fun SecretAccessPinScreen(modifier: Modifier = Modifier) {
+fun SecretAccessPinScreen(
+    modifier: Modifier = Modifier,
+    onPinValidated: () -> Unit = {}
+) {
+    var pinLength by remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(pinLength) {
+        if (pinLength >= 4) {
+            onPinValidated()
+        }
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -79,9 +96,21 @@ fun SecretAccessPinScreen(modifier: Modifier = Modifier) {
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(27.dp))
-            PinProgressDots(filled = 2)
+            PinProgressDots(filled = pinLength.coerceIn(0, 4))
             Spacer(modifier = Modifier.height(38.dp))
-            PinKeypad()
+            PinKeypad(
+                onDigitPress = {
+                    if (pinLength < 4) {
+                        pinLength += 1
+                    }
+                },
+                onBackspace = {
+                    if (pinLength > 0) {
+                        pinLength -= 1
+                    }
+                },
+                onBiometricPress = onPinValidated
+            )
         }
 
         Text(
@@ -158,29 +187,38 @@ private fun PinProgressDots(
 }
 
 @Composable
-private fun PinKeypad(modifier: Modifier = Modifier) {
+private fun PinKeypad(
+    modifier: Modifier = Modifier,
+    onDigitPress: () -> Unit = {},
+    onBackspace: () -> Unit = {},
+    onBiometricPress: () -> Unit = {}
+) {
     Column(
         modifier = modifier.width(244.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(19.dp)
     ) {
-        PinDigitRow(listOf("1", "2", "3"))
-        PinDigitRow(listOf("4", "5", "6"))
-        PinDigitRow(listOf("7", "8", "9"))
+        PinDigitRow(listOf("1", "2", "3"), onDigitPress)
+        PinDigitRow(listOf("4", "5", "6"), onDigitPress)
+        PinDigitRow(listOf("7", "8", "9"), onDigitPress)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
-                modifier = Modifier.size(62.dp),
+                modifier = Modifier
+                    .size(62.dp)
+                    .clickable(onClick = onBiometricPress),
                 contentAlignment = Alignment.Center
             ) {
                 FingerprintIcon(modifier = Modifier.size(18.dp))
             }
-            PinDigitButton(number = "0")
+            PinDigitButton(number = "0", onClick = onDigitPress)
             Box(
-                modifier = Modifier.size(62.dp),
+                modifier = Modifier
+                    .size(62.dp)
+                    .clickable(onClick = onBackspace),
                 contentAlignment = Alignment.Center
             ) {
                 BackspaceIcon(modifier = Modifier.size(width = 18.dp, height = 14.dp))
@@ -190,14 +228,14 @@ private fun PinKeypad(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun PinDigitRow(numbers: List<String>) {
+private fun PinDigitRow(numbers: List<String>, onDigitPress: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         numbers.forEach { number ->
-            PinDigitButton(number = number)
+            PinDigitButton(number = number, onClick = onDigitPress)
         }
     }
 }
@@ -205,10 +243,13 @@ private fun PinDigitRow(numbers: List<String>) {
 @Composable
 private fun PinDigitButton(
     number: String,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = modifier.size(62.dp),
+        modifier = modifier
+            .size(62.dp)
+            .clickable(onClick = onClick),
         shape = CircleShape,
         color = SecretButton,
         shadowElevation = 0.dp
