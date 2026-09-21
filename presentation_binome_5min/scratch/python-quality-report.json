@@ -1,0 +1,46 @@
+{
+  "exists": true,
+  "size": 44651,
+  "slide_count": 6,
+  "notes_count": 6,
+  "placeholder_hits": [
+    {
+      "file": "ppt/notesMasters/notesMaster1.xml",
+      "text": "Slide Number"
+    },
+    {
+      "file": "ppt/notesSlides/notesSlide1.xml",
+      "text": "Slide Number"
+    },
+    {
+      "file": "ppt/notesSlides/notesSlide2.xml",
+      "text": "Slide Number"
+    },
+    {
+      "file": "ppt/notesSlides/notesSlide3.xml",
+      "text": "Slide Number"
+    },
+    {
+      "file": "ppt/notesSlides/notesSlide4.xml",
+      "text": "Slide Number"
+    },
+    {
+      "file": "ppt/notesSlides/notesSlide5.xml",
+      "text": "Slide Number"
+    },
+    {
+      "file": "ppt/notesSlides/notesSlide6.xml",
+      "text": "Slide Number"
+    }
+  ],
+  "visible_slide_number_hits": [
+    "ppt/notesMasters/notesMaster1.xml",
+    "ppt/notesSlides/notesSlide1.xml",
+    "ppt/notesSlides/notesSlide2.xml",
+    "ppt/notesSlides/notesSlide3.xml",
+    "ppt/notesSlides/notesSlide4.xml",
+    "ppt/notesSlides/notesSlide5.xml",
+    "ppt/notesSlides/notesSlide6.xml"
+  ],
+  "xml_failures": []
+}

@@ -1,0 +1,14 @@
+{
+  "workspace": "C:\\Users\\espacegamers\\AndroidStudioProjects\\aman_ai_mvp\\presentation_frontend_mobile",
+  "pptx": "C:\\Users\\espacegamers\\AndroidStudioProjects\\aman_ai_mvp\\presentation_frontend_mobile\\output\\output.pptx",
+  "checks": {
+    "output_hygiene": {
+      "output_dir": "C:\\Users\\espacegamers\\AndroidStudioProjects\\aman_ai_mvp\\presentation_frontend_mobile\\output",
+      "unexpected_files": []
+    }
+  },
+  "failures": [
+    "PPTX package inspection failed: unzip -Z1 C:\\Users\\espacegamers\\AndroidStudioProjects\\aman_ai_mvp\\presentation_frontend_mobile\\output\\output.pptx failed"
+  ],
+  "warnings": []
+}
