@@ -22,10 +22,27 @@ services:
       DB_NAME: aman_db
     depends_on:
       - postgres
+    volumes:
+      - .:/app
+      - /app/node_modules
     networks:
       - aman-network
     ports:
       - "3000:3000"
+  training:
+    build:
+      context: ../training
+      dockerfile: Dockerfile
+    container_name: aman-training
+    volumes:
+      - ../training:/home/jovyan/work
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - GRANT_SUDO=yes
+    restart: unless-stopped
+
 volumes:
   postgres_data:
 networks:

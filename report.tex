@@ -1,0 +1,472 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{charter}
+\usepackage{helvet}
+\usepackage{float}
+\usepackage[most]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{pgfgantt}
+\renewcommand{\familydefault}{\rmdefault}
+\sffamily
+
+% Couleurs
+\definecolor{primary}{RGB}{0,112,150}
+\definecolor{secondary}{RGB}{230,81,0}
+\definecolor{accent}{RGB}{46,125,50}
+\definecolor{graylight}{RGB}{245,245,245}
+
+% En-tête/pied
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{primary}{\small AMAN-AI -- Organisation et gestion de projet}}
+\fancyhead[R]{\textcolor{primary}{\small Version 1.0}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\color{primary}\hrule width\headwidth height\headrulewidth}
+
+% Boîtes
+\newtcolorbox{infobox}{colback=graylight, colframe=primary, arc=4pt, boxrule=0.5pt}
+\newtcolorbox{etapebox}{colback=graylight, colframe=secondary, arc=4pt, boxrule=0.5pt}
+
+\begin{document}
+
+% Page de garde
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    
+    {\Large Université Cadi Ayyad -- Faculté des Sciences et Techniques\\[0.2cm]
+    Département d’Informatique}\\[1cm]
+    
+    {\Large\textbf{Projet de fin de module}}\\[0.3cm]
+    {\Huge\bfseries\sffamily\textcolor{primary}{AMAN-AI}}\\[0.3cm]
+    {\Large\textit{Rapport d'organisation et de gestion de projet}}\\[0.5cm]
+    
+    \vspace{0.5cm}
+    
+    \begin{minipage}{0.7\textwidth}
+        \centering
+        \textbf{Réalisé par :}\\
+        ZINANE Omar (Lead mobile)\\
+        MOHTI Ahmed (Co-leader training)\\
+        ARJAZ DRAGUI Douae (Co-leader training)\\
+        MOUSSAIF Abdelkabir (Lead backend)\\
+    \end{minipage}
+    
+    \vspace{0.5cm}
+    
+    \begin{minipage}{0.7\textwidth}
+        \centering
+        \textbf{Encadrant :}\\
+        Dr. BOURKOUKOU\\
+    \end{minipage}
+    
+    \vspace{1cm}
+    
+    {\large Année universitaire 2025/2026}\\[0.3cm]
+    {\large Avril 2026}\\[0.5cm]
+    
+    \begin{tcolorbox}[colback=graylight, colframe=primary, width=0.8\textwidth, arc=4pt, boxrule=0.5pt]
+        \centering
+        \textit{« Protection discrète et intelligente des personnes en situation de risque »}
+    \end{tcolorbox}
+    
+    \vfill
+\end{titlepage}
+
+\tableofcontents
+\listoffigures
+\listoftables
+\newpage
+
+\section{Introduction}
+Le projet \textbf{AMAN-AI} vise à développer une solution mobile de détection de situations de risque (cris, bruits de lutte, chutes, secousses violentes) à l’aide de l’intelligence artificielle embarquée. Ce rapport présente l’organisation du travail collaboratif mise en place par l’équipe de 4 personnes, en se focalisant sur trois aspects clés :
+\begin{itemize}
+    \item La gestion du code source et du suivi de projet avec \textbf{GitHub}.
+    \item La planification itérative via des \textbf{sprints hebdomadaires}.
+    \item L’\textbf{architecture technique} retenue pour assurer la modularité et la reproductibilité.
+\end{itemize}
+Aucun code source n’est détaillé ici ; seules les pratiques d’organisation et les décisions d’architecture sont présentées.
+
+\section{Organisation de l’équipe et répartition des rôles}
+L’équipe est constituée de quatre membres, chacun ayant un rôle spécifique en fonction de ses compétences.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{5cm}  p{3cm} p{7cm}}
+\toprule
+\textbf{Rôle} & \textbf{Membre} & \textbf{Responsabilités principales} \\
+\midrule
+Co-leader training & Ahmed & Entraînement des modèles audio (CNN), prétraitement des signaux, quantification. \\
+Co-leader training & Douae & Entraînement des modèles de mouvement (Bi-LSTM), gestion des datasets, conversion TensorFlow Lite. \\
+Lead mobile & Omar & Développement Android (UI, service de détection, intégration TFLite, SMS de secours). \\
+Lead backend & Abdelkabir & Conception de l’API REST, base de données PostgreSQL, conteneurisation Docker, notifications push. \\
+\bottomrule
+\end{tabular}
+\caption{Répartition des rôles (2 training, 1 mobile, 1 backend)}
+\end{table}
+
+Chaque membre est responsable de sa partie, mais des réunions quotidiennes de synchronisation (15 minutes) et des revues de code croisées garantissent la cohérence globale.
+
+\section{Gestion du projet avec GitHub}
+\subsection{Dépôt et accès}
+Le code source est hébergé sur un dépôt privé GitHub à l’adresse :\\
+\url{https://github.com/M-Abdelkabir/aman_ai_mvp}
+
+Tous les membres ont un accès en écriture et sont configurés comme \textit{maintainers}. La branche \texttt{main} est protégée : elle nécessite une pull request approuvée par au moins deux personnes et le passage des tests d’intégration continue.
+
+\subsection{Stratégie de branches – Git Flow simplifié}
+\subsubsection{Principes généraux}
+Afin d’organiser le travail collaboratif et d’éviter les conflits, l’équipe a adopté un \textbf{Git Flow allégé}, adapté à une petite équipe de 4 développeurs. Cette stratégie repose sur trois types de branches principales et des règles claires de fusion.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{3cm} p{7cm} p{5cm}}
+\toprule
+\textbf{Branche} & \textbf{Rôle} & \textbf{Durée de vie} \\
+\midrule
+\texttt{main} & Code stable, prêt à être livré (production). Protégée. & Permanent \\
+\texttt{develop} & Intégration continue des fonctionnalités en cours de développement. & Permanent \\
+\texttt{feature/*} & Développement d’une nouvelle fonctionnalité ou correction non urgente. & Éphémère (quelques jours) \\
+\texttt{hotfix/*} & Correction urgente sur \texttt{main} (bug critique). & Éphémère (quelques heures) \\
+\bottomrule
+\end{tabular}
+\caption{Types de branches utilisées}
+\end{table}
+
+\subsubsection{Règles de protection}
+\begin{itemize}
+    \item La branche \texttt{main} est **protégée** : aucun push direct n’est autorisé. Toute modification doit passer par une \textbf{Pull Request (PR)} approuvée par au moins deux membres de l’équipe.
+    \item La branche \texttt{develop} est également protégée (push direct interdit) pour forcer les revues de code, mais les exigences de validation sont moins strictes (un seul approveur suffit).
+    \item Des \textbf{vérifications automatiques} (CI via GitHub Actions) sont obligatoires avant fusion : tests unitaires, linting, build Docker.
+\end{itemize}
+
+\subsubsection{Workflow étape par étape}
+
+Voici la procédure détaillée que chaque membre de l’équipe suit pour intégrer une nouvelle fonctionnalité.
+
+\begin{etapebox}
+\textbf{Étape 1 : Création d’une branche \texttt{feature} depuis \texttt{develop}}
+\begin{verbatim}
+git checkout develop
+git pull origin develop
+git checkout -b feature/nom-de-la-fonctionnalite
+git push origin feature/nom-de-la-fonctionnalite
+\end{verbatim}
+La branche est créée localement puis poussée sur le dépôt distant.
+\end{etapebox}
+
+\begin{etapebox}
+\textbf{Étape 2 : Développement local et commits réguliers}
+Le développeur travaille sur sa branche et effectue des commits fréquents avec des messages clairs suivant la convention :\\
+\texttt{<type>(<scope>): <sujet>}
+\begin{verbatim}
+git add .
+git commit -m "feat(audio): ajout du prétraitement Mel"
+git push origin feature/nom-de-la-fonctionnalite
+\end{verbatim}
+Les types couramment utilisés : \texttt{feat}, \texttt{fix}, \texttt{docs}, \texttt{refactor}, \texttt{test}.
+\end{etapebox}
+
+\begin{etapebox}
+\textbf{Étape 3 : Synchronisation régulière avec \texttt{develop}}
+Pour éviter un décalage trop important, la branche feature doit être régulièrement mise à jour avec les derniers changements de \texttt{develop}. Le rebase est privilégié pour un historique linéaire.
+\begin{verbatim}
+git checkout feature/nom-de-la-fonctionnalite
+git fetch origin
+git rebase origin/develop
+\end{verbatim}
+En cas de conflit, le développeur les résout localement, puis continue avec \texttt{git rebase --continue}.
+\end{etapebox}
+
+\begin{etapebox}
+\textbf{Étape 4 : Ouverture d’une Pull Request (PR) vers \texttt{develop}}
+Une fois la fonctionnalité terminée et testée localement, le développeur ouvre une PR sur GitHub :
+\begin{itemize}
+    \item \textbf{Source} : \texttt{feature/nom-de-la-fonctionnalite}
+    \item \textbf{Cible} : \texttt{develop}
+    \item \textbf{Titre et description} : résumé des changements, référence à l’issue associée (\texttt{Closes \#12}).
+\end{itemize}
+La PR déclenche automatiquement la CI (tests, lint). Elle ne peut pas être fusionnée tant que tous les contrôles ne sont pas verts.
+\end{etapebox}
+
+\begin{etapebox}
+\textbf{Étape 5 : Revue de code par les pairs}
+\begin{itemize}
+    \item Au moins \textbf{deux reviewers} sont assignés (un membre du même domaine et un autre d’un domaine différent pour la transversalité).
+    \item Les reviewers commentent le code, demandent des modifications ou approuvent.
+    \item L’auteur de la PR répond aux commentaires et pousse des corrections sur la même branche (la PR se met à jour automatiquement).
+\end{itemize}
+\end{etapebox}
+
+\begin{etapebox}
+\textbf{Étape 6 : Fusion (merge) dans \texttt{develop}}
+Une fois la PR approuvée et la CI réussie, un mainteneur fusionne la PR via l’interface GitHub (option \textit{Merge pull request}). La branche \texttt{feature} est alors supprimée.
+\begin{verbatim}
+git checkout develop
+git pull origin develop
+\end{verbatim}
+\end{etapebox}
+
+\begin{etapebox}
+\textbf{Étape 7 : Intégration continue dans \texttt{develop}}
+\texttt{develop} contient désormais toutes les fonctionnalités terminées. Des tests d’intégration plus larges peuvent être exécutés périodiquement sur cette branche.
+\end{etapebox}
+
+\begin{etapebox}
+\textbf{Étape 8 : Livraison – Fusion de \texttt{develop} dans \texttt{main}}
+À la fin de chaque sprint ou lorsqu’un lot de fonctionnalités est jugé stable, on prépare une \textit{release} en fusionnant \texttt{develop} dans \texttt{main}.
+\begin{verbatim}
+git checkout main
+git pull origin main
+git merge --no-ff develop   # --no-ff pour conserver l'historique
+git tag -a v1.0.0 -m "Version 1.0.0"
+git push origin main --tags
+\end{verbatim}
+Cette fusion se fait également via une Pull Request de \texttt{develop} vers \texttt{main}, avec revue obligatoire.
+\end{etapebox}
+
+\begin{etapebox}
+\textbf{Étape 9 (cas exceptionnel) : Gestion d’un hotfix}
+Si un bug critique est détecté en production, on crée une branche \texttt{hotfix} depuis \texttt{main}.
+\begin{verbatim}
+git checkout main
+git pull origin main
+git checkout -b hotfix/correction-urgente
+# ... correction ...
+git commit -m "fix: correction vulnérabilité X"
+git push origin hotfix/correction-urgente
+\end{verbatim}
+Une PR est ouverte vers \texttt{main} (et éventuellement vers \texttt{develop} pour synchroniser). Après fusion, on supprime la branche hotfix.
+\end{etapebox}
+
+\subsubsection{Schéma visuel}
+\begin{figure}[H]
+\centering
+\begin{tcolorbox}[colback=graylight, colframe=primary, width=0.9\textwidth, arc=4pt]
+\begin{verbatim}
+main        o-----------------------o (v1.0)
+            |                       |
+develop     o---o---o---o---o---o---o
+             \         /     \     /
+feature/1     o---o---o       o---o
+feature/2                      o---o
+hotfix                            o---o
+\end{verbatim}
+\end{tcolorbox}
+\caption{Représentation schématique du workflow Git Flow simplifié}
+\end{figure}
+
+\subsubsection{Avantages pour l’équipe AMAN-AI}
+\begin{itemize}
+    \item \textbf{Isolation des développements} : chacun travaille sur sa feature sans perturber les autres.
+    \item \textbf{Revue systématique} : qualité et partage de connaissance.
+    \item \textbf{Traçabilité} : chaque modification est liée à une issue et une PR.
+    \item \textbf{CI obligatoire} : évite d’intégrer du code cassé.
+    \item \textbf{Simplicité} : pas de branches \texttt{release} ou \texttt{support} supplémentaires, adapté à la taille de l’équipe.
+\end{itemize}
+
+\subsection{Outil de suivi de projet – GitHub Projects}
+Un tableau Kanban est configuré dans l’onglet \textit{Projects} de GitHub, avec les colonnes :
+\begin{itemize}
+    \item \textbf{Backlog} : tâches à prioriser.
+    \item \textbf{To do} : tâches planifiées pour le sprint en cours.
+    \item \textbf{In progress} : tâches en cours de développement.
+    \item \textbf{Review} : pull requests en attente de validation.
+    \item \textbf{Done} : tâches terminées et fusionnées.
+\end{itemize}
+Chaque issue est déplacée au fil de l’avancement. Des \textit{milestones} (jalons) sont définis pour chaque sprint.
+
+\section{Organisation en sprints hebdomadaires}
+Le projet est découpé en 4 sprints d’une semaine chacun. Chaque sprint commence par une réunion de planification (lundi matin) et se termine par une revue et une rétrospective (vendredi après-midi).
+
+\subsection{Sprint 1 (semaine 1) – Mise en place et fondations}
+\begin{itemize}
+    \item \textbf{Objectifs} :
+        \begin{itemize}
+            \item Création du dépôt GitHub, configuration des branches protégées.
+            \item Rédaction du \texttt{README.md} et du \texttt{.gitignore}.
+            \item Mise en place de l’environnement Docker pour Jupyter (training).
+            \item Initialisation du backend avec Express et PostgreSQL (Docker Compose).
+            \item Définition des endpoints API de base (\texttt{/register}, \texttt{/health}).
+        \end{itemize}
+    \item \textbf{Livrables} : Dépôt fonctionnel, backend basique accessible, conteneur Jupyter testé.
+\end{itemize}
+
+\subsection{Sprint 2 (semaine 2) – Entraînement des modèles et UI mobile}
+\begin{itemize}
+    \item \textbf{Objectifs} :
+        \begin{itemize}
+            \item Téléchargement et prétraitement des datasets audio et mouvement.
+            \item Entraînement des modèles (CNN pour audio, Bi-LSTM pour mouvement) dans les notebooks.
+            \item Conversion vers TensorFlow Lite.
+            \item Développement de l’écran principal Android (Jetpack Compose) et du service de détection (squelette).
+        \end{itemize}
+    \item \textbf{Livrables} : Notebooks remplis, modèles \texttt{.tflite} préliminaires, UI Android basique.
+\end{itemize}
+
+\subsection{Sprint 3 (semaine 3) – Intégration et notifications}
+\begin{itemize}
+    \item \textbf{Objectifs} :
+        \begin{itemize}
+            \item Finalisation des modèles (optimisation, quantification INT8).
+            \item Intégration des classifieurs TensorFlow Lite dans l’application Android.
+            \item Implémentation de la logique de détection (fusion audio/mouvement, minuteur de 30s).
+            \item Ajout de Firebase Cloud Messaging dans le backend.
+            \item Communication Android ↔ backend via Retrofit.
+        \end{itemize}
+    \item \textbf{Livrables} : Application capable de détecter un événement simulé et d’envoyer une alerte au backend.
+\end{itemize}
+
+\subsection{Sprint 4 (semaine 4) – Tests, documentation et livraison}
+\begin{itemize}
+    \item \textbf{Objectifs} :
+        \begin{itemize}
+            \item Tests de bout en bout sur appareil réel.
+            \item Mise en place du fallback SMS (envoi de SMS si push échoue).
+            \item Rédaction de la documentation utilisateur et technique (Wiki GitHub).
+            \item Rédaction du rapport final (ce document).
+            \item Correction des bugs critiques.
+        \end{itemize}
+    \item \textbf{Livrables} : MVP fonctionnel, documentation complète, rapport.
+\end{itemize}
+
+% Dans le préambule, remplacer l'import de pgfgantt par :
+\usepackage{pgfgantt}
+
+% Puis remplacer la figure par :
+\begin{figure}[H]
+\centering
+\begin{ganttchart}[
+    x unit=0.4cm,
+    y unit chart=0.7cm,
+    title/.style={draw=none, fill=primary!20},
+    title label font=\small\bfseries,
+    bar/.style={draw=primary, fill=primary!70, rounded corners=2pt},
+    group/.style={draw=secondary, fill=secondary!30, rounded corners=2pt},
+    group label font=\small\bfseries,
+    link/.style={->, thick}
+]{1}{24}
+\gantttitle{Semaine 1}{6}
+\gantttitle{Semaine 2}{6}
+\gantttitle{Semaine 3}{6}
+\gantttitle{Semaine 4}{6} \\
+\ganttgroup{Infrastructure GitHub}{1}{4} \\
+\ganttgroup{Training (modèles)}{5}{12} \\
+\ganttgroup{Mobile (UI + détection)}{7}{18} \\
+\ganttgroup{Backend (API + notifications)}{3}{16} \\
+\ganttgroup{Intégration et tests}{13}{20}
+\end{ganttchart}
+\caption{Planning simplifié des sprints}
+\end{figure}
+
+\section{Architecture du projet}
+L’architecture globale du projet est divisée en trois grands blocs indépendants mais fortement couplés via des interfaces standardisées (API REST, fichiers TensorFlow Lite). L’utilisation de Docker garantit la reproductibilité des environnements.
+
+\subsection{Schéma d’architecture}
+\begin{figure}[H]
+\centering
+\begin{tcolorbox}[colback=graylight, colframe=primary, width=0.9\textwidth, arc=4pt]
+\centering
+\begin{tabular}{c}
+\textbf{Client Android} (Kotlin, Jetpack Compose, TFLite) \\
+$\updownarrow$ HTTPS (API REST) \\
+\textbf{Backend} (Node.js, Express, PostgreSQL, FCM) \\
+$\updownarrow$ Docker Compose \\
+\textbf{Environnement d’entraînement} (Jupyter, Docker, TensorFlow) \\
+\longrightarrow \textit{export des modèles .tflite} vers le client
+\end{tabular}
+\end{tcolorbox}
+\caption{Architecture à trois niveaux}
+\end{figure}
+
+\newpage
+
+\subsection{Description des composants}
+\begin{enumerate}
+    \item \textbf{Environnement d’entraînement} :
+        \begin{itemize}
+            \item Conteneur Docker basé sur \texttt{jupyter/tensorflow-notebook}.
+            \item Notebooks Jupyter versionnés pour le prétraitement, l’entraînement et la conversion.
+            \item Les modèles finaux (\texttt{.tflite}) sont extraits du conteneur et placés dans le dépôt (dossier \texttt{android/assets}).
+        \end{itemize}
+    \item \textbf{Backend} :
+        \begin{itemize}
+            \item API REST écrite avec Node.js et Express.
+            \item Base de données PostgreSQL pour stocker les utilisateurs et les alertes.
+            \item Service de notifications push via Firebase Cloud Messaging (FCM).
+            \item Orchestration avec Docker Compose (backend + PostgreSQL).
+            \item Exposition du port 3000 pour les appels depuis l’application mobile.
+        \end{itemize}
+    \item \textbf{Application mobile (Android)} :
+        \begin{itemize}
+            \item Langage Kotlin, interface avec Jetpack Compose.
+            \item Service foreground pour la détection en arrière-plan.
+            \item Classifieurs TensorFlow Lite pour l’audio (CNN) et le mouvement (Bi-LSTM).
+            \item Communication avec le backend via Retrofit (OKHttp).
+            \item Mécanisme de fallback : envoi de SMS si l’appel réseau échoue ou si le backend ne peut pas livrer la notification.
+        \end{itemize}
+\end{enumerate}
+
+\subsection{Interactions principales}
+\begin{enumerate}
+    \item \textbf{Enregistrement} : Au premier démarrage, l’application envoie une requête POST \texttt{/api/v1/register} avec l’identifiant unique du périphérique et le token push (FCM).
+    \item \textbf{Détection locale} : Les modèles TFLite tournent entièrement sur le téléphone. Un score de risque (0–100\%) est calculé en temps réel.
+    \item \textbf{Déclenchement d’alerte} : Si le score dépasse 61\% pendant 30 secondes (minuteur annulable par l’utilisateur), l’application envoie une alerte au backend (POST \texttt{/api/v1/alerts}) contenant la localisation, le niveau de risque et les contacts.
+    \item \textbf{Notification} : Le backend tente d’envoyer une notification push aux contacts configurés. En cas d’échec, l’application envoie directement un SMS.
+\end{enumerate}
+
+\subsection{Conteneurisation et reproductibilité}
+Tous les environnements sont définis par des fichiers \texttt{Dockerfile} ou \texttt{docker-compose.yml} :
+\begin{itemize}
+    \item \textbf{Training} : \texttt{docker build -t aman-jupyter .} puis \texttt{docker run} avec montage des notebooks.
+    \item \textbf{Backend} : \texttt{docker-compose up --build} lance PostgreSQL et l’API.
+\end{itemize}
+Cette approche permet à chaque membre de disposer exactement du même environnement, quel que soit son système d’exploitation.
+
+\section{Outils et bonnes pratiques}
+\subsection{Outils collaboratifs}
+\begin{itemize}
+    \item \textbf{GitHub} : code, suivi des issues, projets, revues de code.
+    \item \textbf{Docker} : environnement unifié pour l’entraînement et le backend.
+    \item \textbf{Discord / WhatsApp} : communications quotidiennes.
+    \item \textbf{Google Drive} : partage de documents (cahier des charges, compte rendu de réunions).
+\end{itemize}
+
+\subsection{Standards de qualité}
+\begin{itemize}
+    \item \textbf{Linting} : ESLint pour le backend, ktlint pour Android, black pour les notebooks.
+    \item \textbf{Tests} : Jest pour le backend, JUnit pour Android (tests unitaires locaux).
+    \item \textbf{Documentation} : Chaque fonctionnalité doit être accompagnée d’un \texttt{README} partiel ou de commentaires dans le code. Un Wiki GitHub centralise les informations.
+\end{itemize}
+
+\section{Conclusion}
+L’organisation décrite a permis à une équipe de 4 personnes de mener à bien le projet AMAN-AI dans un délai de 4 semaines. L’utilisation rigoureuse de GitHub (branches, pull requests, revues) a facilité l’intégration continue et la gestion des conflits. Les sprints hebdomadaires ont assuré une progression régulière et une adaptation rapide aux imprévus. L’architecture modulaire (training, backend, mobile) garantit la maintenabilité et la reproductibilité. Ce rapport sert de référence pour toute équipe souhaitant adopter des pratiques agiles et professionnelles de développement logiciel.
+
+\vfill
+\begin{center}
+\textcolor{primary}{\rule{0.8\textwidth}{0.4pt}}\\
+\small\textit{Fait à Marrakech, Avril 2026 – Équipe AMAN-AI, FST Marrakech}
+\end{center}
+
+\end{document}
