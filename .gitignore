@@ -50,3 +50,13 @@ coverage.xml
 # OS
 .DS_Store
 Thumbs.db
+
+# Data
+data/
+*.zip
+*.npy
+*.csv
+
+# Modèles lourds (garder seulement .tflite)
+*.h5
+best_model.keras
